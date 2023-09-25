@@ -1,0 +1,147 @@
+insert into campus values('1','IUPUI','425 Universsity Bld','Indianapoils','IN','46202','317-274-459',0.8);
+insert into campus values('2','Indiana university','107 Indiana Ave','Bloomington','IN','47405','812-855-4848',0.7);
+
+---------------------------------------
+ create table position1(positionid varchar(5) primary key,position varchar(20),yearlymembershipfee float(7,2));
+ 
+insert into position1 values('1','lecturer',105.50);
+insert into position1 values('2','Proffessor',700.75);
+-----------------------------------------
+CREATE TABLE members (
+    memberid varchar(5) PRIMARY KEY,
+    lastname varchar(20),
+    firstname varchar(20),
+    campusaddress varchar(20),
+    campusphone varchar(20),
+    campusid varchar(5),
+    FOREIGN KEY (campusid) REFERENCES campus(campusid),
+    positionid varchar(5),
+    FOREIGN KEY (positionid) REFERENCES position1(positionid),
+    contractduration DECIMAL(8,2)
+);
+
+insert into members values('1','Ellen','Monk','009 Purrell','812-123-1234','1','1',12);
+insert into members values('2','Joe','Btady','008 Statefeed Hall','765-234-2345','2','2',10);
+--------------------------------------------------
+create table prices(
+    -> fooditemtypeid varchar(5) primary key,
+    -> mealtype varchar(20),
+    -> mealprice float(7,2)
+    -> );
+Query OK, 0 rows affected (0.06 sec)
+
+ insert into prices values('1','soup',5.50);
+Query OK, 1 row affected (0.00 sec)
+
+mysql> insert into prices values('2','Desert',2.75);
+Query OK, 1 row affected (0.00 sec)
+--------------------------------------------------
+create table fooditems(fooditemid varchar(5) primary key,
+    -> fooditemname varchar(20),
+    -> fooditemtypeid varchar(5), foreign key(fooditemtypeid) references prices(fooditemtypeid));
+Query OK, 0 rows affected (0.10 sec)
+
+mysql> select * from fooditems;
+Empty set (0.00 sec)
+
+mysql> insert into fooditems values
+    -> ('0001','Veg clear','1'
+    -> );
+Query OK, 1 row affected (0.00 sec)
+
+mysql> insert into fooditems values
+    -> ('0002','Sweet corn','2'
+    -> );
+Query OK, 1 row affected (0.00 sec)
+--------------------------------------------------------------
+create table orders(ordersid varchar(5) PRIMARY KEY ,memberid varchar(5),
+    -> foreign key(memberid) references members(memberid),
+    -> orderdate varchar(20));
+Query OK, 0 rows affected (0.06 sec)
+
+
+ insert into orders values('1','1','March 5,2014');
+Query OK, 1 row affected (0.00 sec)
+
+insert into orders values('2','2','March 5,2014');
+Query OK, 1 row affected (0.00 sec)
+-------------------------------------------------------------
+
+CREATE TABLE orderline (
+    ordersid varchar(5),
+    FOREIGN KEY (ordersid) REFERENCES orders(ordersid),
+    fooditemid varchar(5),
+    FOREIGN KEY (fooditemid) REFERENCES fooditems(fooditemid),
+    quantity INT(3),
+    PRIMARY KEY (ordersid, fooditemid) 
+);
+insert into orderline values('1','0001',1);
+Query OK, 1 row affected (0.02 sec)
+
+mysql> insert into orderline values('2','0002',1);
+Query OK, 1 row affected (0.00 sec)
+
+
+
+---------------------------OUTPUT---------------------------------------------------
+select * from campus;
++----------+--------------------+---------------------+--------------+-------+-------+--------------+----------------+
+| campusid | campusname         | street              | city         | state | zip   | phone        | campusDiscount |
++----------+--------------------+---------------------+--------------+-------+-------+--------------+----------------+
+| 1        | IUPUI              | 425 Universsity Bld | Indianapoils | IN    | 46202 | 317-274-459  |           0.80 |
+| 2        | Indiana university | 107 Indiana Ave     | Bloomington  | IN    | 47405 | 812-855-4848 |           0.70 |
++----------+--------------------+---------------------+--------------+-------+-------+--------------+----------------+
+2 rows in set (0.00 sec)
+
+mysql> select * from fooditems;
++------------+--------------+----------------+
+| fooditemid | fooditemname | fooditemtypeid |
++------------+--------------+----------------+
+| 0001       | Veg clear    | 1              |
+| 0002       | Sweet corn   | 2              |
++------------+--------------+----------------+
+2 rows in set (0.00 sec)
+
+mysql> select * from members;
++----------+----------+-----------+--------------------+--------------+----------+------------+------------------+
+| memberid | lastname | firstname | campusaddress      | campusphone  | campusid | positionid | contractduration |
++----------+----------+-----------+--------------------+--------------+----------+------------+------------------+
+| 1        | Ellen    | Monk      | 009 Purrell        | 812-123-1234 | 1        | 1          |            12.00 |
+| 2        | Joe      | Btady     | 008 Statefeed Hall | 765-234-2345 | 2        | 2          |            10.00 |
++----------+----------+-----------+--------------------+--------------+----------+------------+------------------+
+2 rows in set (0.00 sec)
+
+mysql> select * from orderline;
++----------+------------+----------+
+| ordersid | fooditemid | quantity |
++----------+------------+----------+
+| 1        | 0001       |        1 |
+| 2        | 0002       |        1 |
++----------+------------+----------+
+2 rows in set (0.00 sec)
+select * from orders;
++----------+----------+--------------+
+| ordersid | memberid | orderdate    |
++----------+----------+--------------+
+| 1        | 1        | March 5,2014 |
+| 2        | 2        | March 5,2014 |
++----------+----------+--------------+
+2 rows in set (0.00 sec)
+
+mysql> select * from position1;
++------------+------------+---------------------+
+| positionid | position   | yearlymembershipfee |
++------------+------------+---------------------+
+| 1          | lecturer   |              105.50 |
+| 2          | Proffessor |              700.75 |
++------------+------------+---------------------+
+2 rows in set (0.00 sec)
+
+mysql> select * from prices;
++----------------+----------+-----------+
+| fooditemtypeid | mealtype | mealprice |
++----------------+----------+-----------+
+| 1              | soup     |      5.50 |
+| 2              | Desert   |      2.75 |
++----------------+----------+-----------+
+2 rows in set (0.00 sec)
